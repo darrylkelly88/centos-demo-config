@@ -1,4 +1,5 @@
 ---
 - name: configure demo
+  hosts: all
   roles:
     - centos-demo
