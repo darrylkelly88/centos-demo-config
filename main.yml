@@ -1,0 +1,4 @@
+---
+- name: configure demo
+  roles:
+    - centos-demo
