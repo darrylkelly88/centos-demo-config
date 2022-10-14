@@ -2,12 +2,28 @@
 # tasks file for centos-demo
 #
 #
-- name: configure yum repos
+- name: configure yum repos - comment out mirrorlist
   shell: "sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*"
-- name: configure yum repos
+- name: configure yum repos - change baseurl
   shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
 - name: upgrade all packages
   yum:
     name: '*'
+    state: latest
+- name: download red hat gpg key
+  get_url:
+    dest: "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"
+    url: "https://www.redhat.com/security/data/fd431d51.txt"
+- name: download SSL cert for Red Hat CDN
+  get_url:
+    dest: "/etc/rhsm/ca/redhat-uep.pem"
+    url: " https://ftp.redhat.com/redhat/convert2rhel/redhat-uep.pem"
+- name: add the convert2rhel repo
+  get_url:
+    dest: "/etc/yum.repos.d/convert2rhel.repo"
+    get_url: "https://ftp.redhat.com/redhat/convert2rhel/8/convert2rhel.repo"
+- name: install convert2rhel utility
+  yum:
+    name: "convert2rhel"
     state: latest
 
