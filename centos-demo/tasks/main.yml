@@ -39,3 +39,10 @@
     regexp: "enabled = 1"
     line: "enabled = 0"
     state: present
+- name: update to a supported Kernel
+  yum:
+    name: kernel-core-4.18.0-348.7.1.el8_5
+    state: present
+- name: restart
+  reboot:
+
