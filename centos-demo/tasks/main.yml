@@ -31,4 +31,5 @@
     enabled: false
     file: convert2rhel
     name: "Convert2RHEL for OS 8"
+    baseurl: "https://cdn.redhat.com/content/public/convert2rhel/8/x86_64/os/"
 
