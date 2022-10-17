@@ -30,4 +30,5 @@
   yum_repository:
     enabled: false
     file: convert2rhel
+    name: "Convert2RHEL for OS 8"
 
