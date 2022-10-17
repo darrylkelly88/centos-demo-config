@@ -26,4 +26,8 @@
   yum:
     name: "convert2rhel"
     state: latest
+- name: disable convert2rhel repo
+  yum_repository:
+    enabled: false
+    file: convert2rhel
 
