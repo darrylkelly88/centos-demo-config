@@ -6,10 +6,7 @@
   shell: "sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*"
 - name: configure yum repos - change baseurl
   shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
-- name: upgrade all packages
-  yum:
-    name: '*'
-    state: latest
+
 - name: download red hat gpg key
   get_url:
     dest: "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"
@@ -22,17 +19,14 @@
   get_url:
     dest: "/etc/yum.repos.d/convert2rhel.repo"
     url: "https://ftp.redhat.com/redhat/convert2rhel/8/convert2rhel.repo"
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
 - name: install convert2rhel utility
   yum:
     name: "convert2rhel"
     state: latest
-      #- name: disable convert2rhel repo
-  # yum_repository:
-    # enabled: false
-      # file: convert2rhel
-      # name: "Convert2RHEL for OS 8"
-      # baseurl: "https://cdn.redhat.com/content/public/convert2rhel/8/x86_64/os/"
-      #    description: "convert2rhel-for-rhel-8-rpms"
 - name: disable convert2rhel repo
   lineinfile:
     path: /etc/yum.repos.d/convert2rhel.repo
