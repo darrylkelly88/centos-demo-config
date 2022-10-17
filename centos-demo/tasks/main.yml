@@ -36,6 +36,6 @@
 - name: disable convert2rhel repo
   lineinfile:
     path: /etc/yum.repos.d/convert2rhel.repo
-    regexp: "Enabled = 1"
-    line: "Enabled = 0"
+    regexp: "enabled = 1"
+    line: "enabled = 0"
     state: present
