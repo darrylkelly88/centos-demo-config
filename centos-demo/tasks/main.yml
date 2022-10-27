@@ -49,6 +49,7 @@
       get_url:
         dest: "/usr/share/convert2rhel/subscription-manager/katello-ca-consumer-latest.noarch.rpm"
         url: https://{{satellite_fqdn}}/pub/katello-ca-consumer-latest.noarch.rpm
+        validate_certs: false
     - name: create config file for convert2rhel
       template:
         src: config.ini.j2
