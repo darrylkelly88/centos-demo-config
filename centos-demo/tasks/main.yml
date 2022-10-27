@@ -40,7 +40,9 @@
   yum:
     name: "{{ kernel_package }}"
     state: present
-  meta: reboot_system    
+  notify: reboot_system
+- name: check if reboot required
+  meta: flush_handlers
 - name: perform conversion using Red Hat Satellite
   block:
     - name: download consumer rpm from satellite server
