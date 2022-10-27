@@ -31,11 +31,5 @@ repoconfig_bool - Default is False. Determines if the default Yum Repo's are edi
 
 satellite_fqdn - the fqdn of your satellite server. This is the server the machine will be registered to.
 
-
-
-
-
-
-
-
+kernel_package - an up to date kernel is required to perform a conversion. Define the package name using this variable. Default value works with CentOS 8.5
 
