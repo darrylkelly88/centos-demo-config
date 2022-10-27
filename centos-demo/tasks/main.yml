@@ -21,6 +21,11 @@
   get_url:
     dest: "/etc/yum.repos.d/convert2rhel.repo"
     url: "https://ftp.redhat.com/redhat/convert2rhel/8/convert2rhel.repo"
+- name: ensure supported kernel is installed
+  yum:
+    name: "{{ kernel_package }}"
+    state: present
+  notify: reboot_system
 - name: upgrade all packages
   yum:
     name: '*'
@@ -36,11 +41,6 @@
     regexp: "enabled = 1"
     line: "enabled = 0"
     state: present
-- name: update to a supported Kernel
-  yum:
-    name: "{{ kernel_package }}"
-    state: present
-  notify: reboot_system
 - name: check if reboot required
   meta: flush_handlers
 - name: perform conversion using Red Hat Satellite
