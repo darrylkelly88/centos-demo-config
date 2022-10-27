@@ -1,2 +1,8 @@
 ---
 # vars file for centos-demo
+#
+#
+#
+
+activation_key: ""
+organisation: ""

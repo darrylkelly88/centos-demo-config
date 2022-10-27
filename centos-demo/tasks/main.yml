@@ -2,14 +2,18 @@
 # tasks file for centos-demo
 #
 #
-- name: configure yum repos - comment out mirrorlist
-  shell: "sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*"
-- name: configure yum repos - change baseurl
-  shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
+- name: configure repos
+  block:
+    - name: configure yum repos - comment out mirrorlist
+      shell: "sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*"
+    - name: configure yum repos - change baseurl
+      shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
+  when: repoconfig_bool == True
 - name: upgrade all packages
   yum:
     name: '*'
     state: latest
+  when: upgrade_bool == True    
 - name: download red hat gpg key
   get_url:
     dest: "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"
@@ -26,14 +30,7 @@
   yum:
     name: "convert2rhel"
     state: latest
-      #- name: disable convert2rhel repo
-  # yum_repository:
-    # enabled: false
-      # file: convert2rhel
-      # name: "Convert2RHEL for OS 8"
-      # baseurl: "https://cdn.redhat.com/content/public/convert2rhel/8/x86_64/os/"
-      #    description: "convert2rhel-for-rhel-8-rpms"
-- name: disable convert2rhel repo
+- name: disable convert2rhel repo (this avoids a bug in convert2rhel tool)
   lineinfile:
     path: /etc/yum.repos.d/convert2rhel.repo
     regexp: "enabled = 1"
@@ -41,8 +38,21 @@
     state: present
 - name: update to a supported Kernel
   yum:
-    name: kernel-core-4.18.0-348.7.1.el8_5
+    name: "{{ kernel_package }}"
     state: present
-- name: restart
-  reboot:
+  notify: reboot_system    
+- name: perform conversion using Red Hat Satellite
+  block:
+    - name: download consumer rpm from satellite server
+      get_url:
+        dest: "/usr/share/convert2rhel/subscription-manager/katello-ca-consumer-latest.noarch.rpm"
+        url: https://{{satellite_fqdn}}/pub/katello-ca-consumer-latest.noarch.rpm
+    - name: create config file for convert2rhel
+      template:
+        src: config.ini.j2
+        dest: "/usr/share/convert2rhel/config.ini"
+        mode: 0600
+    - name: start conversion
+      command: convert2rhel --org {{organisation}} --config-file /user/share/config.ini
+
 
