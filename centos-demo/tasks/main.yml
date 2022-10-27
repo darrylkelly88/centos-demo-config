@@ -40,7 +40,7 @@
   yum:
     name: "{{ kernel_package }}"
     state: present
-  notify: reboot_system    
+  meta: reboot_system    
 - name: perform conversion using Red Hat Satellite
   block:
     - name: download consumer rpm from satellite server
@@ -54,5 +54,6 @@
         mode: 0600
     - name: start conversion
       command: convert2rhel --org {{organisation}} --config-file /user/share/config.ini
+  when: reboot_bool == True
 
 
