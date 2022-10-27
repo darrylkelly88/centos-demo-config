@@ -11,7 +11,7 @@ upgrade_bool: False
 
   # WARNING: enabling to true uses shell command sed to edit repos and may have unforseen consequences - this aproach is not idempotent
   # Controls whether default CentOS repos are edited
-repo_config: False
+repoconfig_bool: False
 
 
   # convert2rhel requires a supported kernel - this variable controls which kernel to update to  

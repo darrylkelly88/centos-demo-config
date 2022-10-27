@@ -26,6 +26,10 @@
   get_url:
     dest: "/etc/yum.repos.d/convert2rhel.repo"
     url: "https://ftp.redhat.com/redhat/convert2rhel/8/convert2rhel.repo"
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
 - name: install convert2rhel utility
   yum:
     name: "convert2rhel"
