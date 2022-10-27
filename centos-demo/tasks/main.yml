@@ -55,7 +55,7 @@
         src: config.ini.j2
         dest: "/usr/share/convert2rhel/config.ini"
         mode: 0600
-    - name: start conversion
+    - name: converting to RHEL (min. 20 mins)
       command: convert2rhel --org {{organisation}} --config-file /usr/share/convert2rhel/config.ini -y
       notify: reboot_system
   when: reboot_bool == True
