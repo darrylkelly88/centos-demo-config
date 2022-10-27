@@ -56,7 +56,7 @@
         dest: "/usr/share/convert2rhel/config.ini"
         mode: 0600
     - name: start conversion
-      command: convert2rhel --org {{organisation}} --config-file /usr/share/convert2rhel/config.ini
+      command: convert2rhel --org {{organisation}} --config-file /usr/share/convert2rhel/config.ini -y
   when: reboot_bool == True
 
 
