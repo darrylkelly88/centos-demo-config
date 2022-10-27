@@ -32,9 +32,14 @@
     state: latest
   when: upgrade_bool == True    
 - name: install convert2rhel utility
-  yum:
-    name: "convert2rhel"
-    state: latest
+  block:
+    yum:
+      name: "convert2rhel"
+      state: latest
+  rescue:
+    yum:
+      name: "convert2rhel"
+      state: latest
 - name: disable convert2rhel repo (this avoids a bug in convert2rhel tool)
   lineinfile:
     path: /etc/yum.repos.d/convert2rhel.repo
