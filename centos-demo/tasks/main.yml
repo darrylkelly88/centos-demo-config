@@ -38,7 +38,7 @@
         name: "convert2rhel"
         state: latest
   rescue:
-    - nameL install the convert2rhel utility (attempt2)
+    - name: install the convert2rhel utility (attempt2)
       yum:
         name: "convert2rhel"
         state: latest
