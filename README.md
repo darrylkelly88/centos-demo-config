@@ -27,7 +27,7 @@ reboot_bool - Default is False. If false a full conversion will not be completed
 
 upgrade_bool - Default is False. Determines if yum update is executed before upgrade
 
-repoconfig_bool - Default is False. Determines if the default Yum Repo's are edited. WARNING if set to true this uses the shell module to execute and is not idempotent. Setting to True may have unintended consequences
+repoconfig_bool - Default is False. Determines if the default Yum Repo's are edited. WARNING if set to true this uses the shell module to execute and is not idempotent. Setting to True may have unintended consequences. This may be required to be set to True when upgrade_bool is set to True.
 
 satellite_fqdn - the fqdn of your satellite server. This is the server the machine will be registered to.
 
