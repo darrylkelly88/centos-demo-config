@@ -7,11 +7,8 @@
   when: reboot_bool == True
 
 
+
 - name: update_repos
-  block:
-    - name: configure yum repos - comment out mirrorlist
-      shell: "sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*"
-    - name: configure yum repos - change baseurl
-      shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
+  shell: "sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
   when: repoconfig_bool == True
 
