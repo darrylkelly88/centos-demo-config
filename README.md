@@ -21,6 +21,8 @@ Variables to define
 
 conversion_method - acceptable values are "satellite" or "RHN". This deines the content source and where the system is subscribed to.
 
+---
+
 Variables required if using Satellite to convert:
 
 satellite_fqdn - the fqdn of your satellite server. This is the server the machine will be registered to.
@@ -29,6 +31,7 @@ activation_key - This is the activiation key used by your satellite server
 
 organisation - This is the organisation used by your satellilte server
 
+---
 
 Variables Required if converting via RHN:
 
@@ -38,6 +41,7 @@ rhsm_password - Password for red hat. Recommended practice to keep this in an an
 
 rhsm_pool - pool ID of the subscription used.
 
+---
 
 Other Variables
 
