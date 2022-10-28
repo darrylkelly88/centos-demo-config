@@ -2,6 +2,40 @@
 # tasks file for centos-demo
 #
 #
+#############################
+
+- name: running pre-conversion checks
+  block:
+    - name: checking that machine is running CentOS
+      assert:
+        that: "ansible_distribution == 'CentOS'"
+        msg: "Target machine must be running CentOS to convert. This machine is running {{ ansible_distribution }}"
+    - name: checking conversion_method is defined
+      assert:
+        that: "conversion_method is defined"
+        msg: "Please define a conversion method. Acceptable values are satellite or RHN"
+
+    - name: checking values are defined for conversion via satellite
+      assert:
+        that:
+          - "activation_key is defined"
+          - "organisation is defined"
+          - "satellite_fqdn is defined"
+        msg: "Please ensure all variables for conversion by satellite are defined: activation_key organisation satellite_fqdn"
+      when: conversion_method == "satellite"
+
+    - name: checking values are defined for conversion by RHN
+      assert:
+        that:
+          - "rhsm_username is defined"
+          - "rhsm_password is defined"
+          - "rhsm_pool is defined"
+        msg: "Please ensure all variables for conversion by RHN are defined: rhsm_username rhsm_password rhsm_pool"
+      when: conversion_method == "RHN"
+
+
+
+
 - name: configure repos
   block:
     - name: configure yum repos - comment out mirrorlist
