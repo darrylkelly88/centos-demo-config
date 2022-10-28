@@ -57,7 +57,7 @@
 - name: add the convert2rhel repo
   get_url:
     dest: "/etc/yum.repos.d/convert2rhel.repo"
-    url: "https://ftp.redhat.com/redhat/convert2rhel/8/convert2rhel.repo"
+    url: "https://ftp.redhat.com/redhat/convert2rhel/{{ ansible_distribution_major_version }}/convert2rhel.repo"
 
 - name: ensure supported kernel is installed
   yum:
@@ -95,11 +95,13 @@
         dest: "/usr/share/convert2rhel/subscription-manager/katello-ca-consumer-latest.noarch.rpm"
         url: https://{{satellite_fqdn}}/pub/katello-ca-consumer-latest.noarch.rpm
         validate_certs: false
+
     - name: create config file for convert2rhel
       template:
         src: config.ini.j2
         dest: "/usr/share/convert2rhel/config.ini"
         mode: 0600
+
     - name: converting to RHEL (min. 20 mins)
       command: convert2rhel --org {{organisation}} --config-file /usr/share/convert2rhel/config.ini -y
       notify: reboot_system
