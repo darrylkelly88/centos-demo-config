@@ -65,7 +65,7 @@
 
 - name: detect and set supported kernel
   vars:
-    kernel_package: "{{ 'supported_kernel' }}.{{ 'ansible_distribution_version' }}"
+    kernel_package: "{{ ansible_distribution_version }}"
   debug:
     var: kernel_package
 
