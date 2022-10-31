@@ -32,6 +32,10 @@
           - "rhsm_pool is defined"
         msg: "Please ensure all variables for conversion by RHN are defined: rhsm_username rhsm_password rhsm_pool"
       when: conversion_method == "RHN"
+    - name: checking machine architecture
+      assert:
+        that: "ansible_architecture == x86_64"
+        msg: " Target machine architecture has to be x86_64. This machine is running {{ ansible_architecture }}"
 
 
 
@@ -60,6 +64,7 @@
     url: "https://ftp.redhat.com/redhat/convert2rhel/{{ ansible_distribution_major_version }}/convert2rhel.repo"
 
 - name: ensure supported kernel is installed
+  kernel_package: "{{supported_kernel}}.{{ansible_distribution_version}}"
   yum:
     name: "{{ kernel_package }}"
     state: present

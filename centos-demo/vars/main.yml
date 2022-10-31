@@ -6,3 +6,11 @@
 
 activation_key: ""
 organisation: ""
+
+
+
+supported_kernel:
+  - 7.1: kernel-core-3.10.0-229
+  - 7.2: kernel-core-3.1.0-327
+  - 8.6: kernel-core-4.18.0-372.9.1
+  - 8.5: kernel-core-4.18.0-348
