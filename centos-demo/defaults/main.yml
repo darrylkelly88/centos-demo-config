@@ -15,6 +15,6 @@ repoconfig_bool: False
 
 
   # convert2rhel requires a supported kernel - this variable controls which kernel to update to  
-kernel_package: kernel-core-4.18.0-348.7.1.el8_5
+  #kernel_package: kernel-core-4.18.0-348.7.1.el8_5
 
 

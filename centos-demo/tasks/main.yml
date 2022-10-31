@@ -66,6 +66,9 @@
 - name: ensure supported kernel is installed
   vars:
     kernel_package: "{{supported_kernel}}.{{ansible_distribution_version}}"
+  debug:
+    var: kernel_package
+
   yum:
     name: "{{ kernel_package }}"
     state: present
