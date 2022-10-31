@@ -34,7 +34,7 @@
       when: conversion_method == "RHN"
     - name: checking machine architecture
       assert:
-        that: "ansible_architecture == x86_64"
+        that: "ansible_architecture == 'x86_64'"
         msg: " Target machine architecture has to be x86_64. This machine is running {{ ansible_architecture }}"
 
 
