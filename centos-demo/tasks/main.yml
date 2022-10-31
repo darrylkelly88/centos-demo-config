@@ -63,11 +63,13 @@
     dest: "/etc/yum.repos.d/convert2rhel.repo"
     url: "https://ftp.redhat.com/redhat/convert2rhel/{{ ansible_distribution_major_version }}/convert2rhel.repo"
 
-- name: detect and set supported kernel
-  vars:
-    kernel_package: "{{ supported_kernel }}.{{ ansible_distribution_version }}"
-  debug:
-    var: kernel_package
+      #plan to call kernel package from variable list, currently not working in testing
+
+      #- name: detect and set supported kernel
+      #  vars:
+      #    kernel_package: "{{ supported_kernel }}.{{ ansible_distribution_version }}"
+      #  debug:
+      #    var: kernel_package
 
 - name: ensure supported kernel is installed
   yum:
