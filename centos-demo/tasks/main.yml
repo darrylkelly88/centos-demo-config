@@ -7,16 +7,29 @@
 - name: running pre-conversion checks
   block:
     - name: checking that machine is running CentOS
-      assert:
+      ansible.builtin.assert:
         that: "ansible_distribution == 'CentOS'"
         msg: "Target machine must be running CentOS to convert. This machine is running {{ ansible_distribution }}"
+
+    - name: checking machine architecture
+      ansible.builtin.assert:
+        that: "ansible_architecture == 'x86_64'"
+        fail_msg: "Target machine architecture has to be x86_64. This machine is running {{ ansible_architecture }}"
+        success_msg: "Target machine architecture is {{ ansible_architecture }}"
+
+    - name: checking kernel version 
+      ansible.builtin.assert:
+        that: "'{{ ansible_kernel }}' in KernelList"
+        fail_msg: "No supported kernel version found"
+        success_msg: "OK - kernel is in list of supported kernels"
+
     - name: checking conversion_method is defined
-      assert:
+      ansible.builtin.assert:
         that: "conversion_method is defined"
         msg: "Please define a conversion method. Acceptable values are satellite or RHN"
 
     - name: checking values are defined for conversion via satellite
-      assert:
+      ansible.builtin.assert:
         that:
           - "activation_key is defined"
           - "organisation is defined"
@@ -25,73 +38,59 @@
       when: conversion_method == "satellite"
 
     - name: checking values are defined for conversion by RHN
-      assert:
+      ansible.builtin.assert:
         that:
           - "rhsm_username is defined"
           - "rhsm_password is defined"
           - "rhsm_pool is defined"
         msg: "Please ensure all variables for conversion by RHN are defined: rhsm_username rhsm_password rhsm_pool"
       when: conversion_method == "RHN"
-    - name: checking machine architecture
-      assert:
-        that: "ansible_architecture == 'x86_64'"
-        msg: " Target machine architecture has to be x86_64. This machine is running {{ ansible_architecture }}"
-
-
 
 
 - name: configure repos
   block:
     - name: configure yum repos - comment out mirrorlist
-      shell: "sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*"
+      ansible.builtin.shell: "sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*"
     - name: configure yum repos - change baseurl
-      shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
+      ansible.builtin.shell: "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*"
   when: repoconfig_bool == True  
 
 - name: download red hat gpg key
-  get_url:
+  ansible.builtin.get_url:
     dest: "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"
     url: "https://www.redhat.com/security/data/fd431d51.txt"
 
 - name: download SSL cert for Red Hat CDN
-  get_url:
+  ansible.builtin.get_url:
     dest: "/etc/rhsm/ca/redhat-uep.pem"
     url: " https://ftp.redhat.com/redhat/convert2rhel/redhat-uep.pem"
 
 - name: add the convert2rhel repo
-  get_url:
+  ansible.builtin.get_url:
     dest: "/etc/yum.repos.d/convert2rhel.repo"
     url: "https://ftp.redhat.com/redhat/convert2rhel/{{ ansible_distribution_major_version }}/convert2rhel.repo"
 
-      #plan to call kernel package from variable list, currently not working in testing
-
-      #- name: detect and set supported kernel
-      #  vars:
-      #    kernel_package: "{{ supported_kernel }}.{{ ansible_distribution_version }}"
-      #  debug:
-      #    var: kernel_package
-
 - name: ensure supported kernel is installed
-  yum:
+  ansible.builtin.yum:
     name: "{{ kernel_package }}"
     state: present
   notify: reboot_system
   when: upgrade_bool == True    
 
 - name: install convert2rhel utility
-  yum:
+  ansible.builtin.yum:
     name: "convert2rhel"
     state: latest
 
 - name: upgrade all packages
-  yum:
+  ansible.builtin.yum:
     name: '*'
     state: latest
   notify: update_repos
   when: upgrade_bool == True    
 
 - name: disable convert2rhel repo (this avoids a bug in convert2rhel tool)
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/yum.repos.d/convert2rhel.repo
     regexp: "enabled = 1"
     line: "enabled = 0"
@@ -103,13 +102,13 @@
 - name: perform conversion using Red Hat Satellite
   block:
     - name: download consumer rpm from satellite server
-      get_url:
+      ansible.builtin.get_url:
         dest: "/usr/share/convert2rhel/subscription-manager/katello-ca-consumer-latest.noarch.rpm"
         url: https://{{satellite_fqdn}}/pub/katello-ca-consumer-latest.noarch.rpm
         validate_certs: false
 
     - name: create config file for convert2rhel
-      template:
+      ansible.builtin.template:
         src: config.ini.j2
         dest: "/usr/share/convert2rhel/config.ini"
         mode: 0600
@@ -120,6 +119,6 @@
   when: reboot_bool == True and conversion_method == "satellite"
 
 - name: perform conversion using RHN
-  command: convert2rhel -u {{ rhsm_username }} -p {{ rhsm_password }} --pool {{ rhsm_pool }} -y
+  ansible.builtin.command: convert2rhel -u {{ rhsm_username }} -p {{ rhsm_password }} --pool {{ rhsm_pool }} -y
   notify: reboot_system
   when: reboot_bool == True and conversion_method == "RHN"
